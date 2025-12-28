@@ -1,26 +1,54 @@
 package csv
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strings"
 )
 
-func Read(path string) (map[string][]any, error) {
+func Read(path string, argOpts ...Option) (map[string][]any, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
+	opts := defaultOptions()
+	for _, opt := range argOpts {
+		opt(&opts)
+	}
+
+	scanner := bufio.NewScanner(f)
+	if !scanner.Scan() {
+		return nil, fmt.Errorf("csv: empty file")
+	}
+	headerLine := scanner.Text()
+
+	delimiter := opts.comma
+	if delimiter == 0 {
+		commaCount := strings.Count(headerLine, ",")
+		semicolonCount := strings.Count(headerLine, ";")
+
+		delimiter = ','
+		if semicolonCount > commaCount {
+			delimiter = ';'
+		}
+	}
+
+	if _, err := f.Seek(0, 0); err != nil {
+		return nil, err
+	}
+
 	r := csv.NewReader(f)
+	r.Comma = delimiter
 	r.TrimLeadingSpace = true
 
 	records, err := r.ReadAll()
 	if err != nil {
 		return nil, err
 	}
-
 	if len(records) == 0 {
 		return nil, fmt.Errorf("csv: empty file")
 	}

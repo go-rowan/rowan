@@ -5,8 +5,10 @@ import (
 	"github.com/go-rowan/rowan/table"
 )
 
-func FromCSV(path string) (*Table, error) {
-	data, err := csv.Read(path)
+type CSVOption = csv.Option
+
+func FromCSV(path string, opts ...CSVOption) (*Table, error) {
+	data, err := csv.Read(path, opts...)
 	if err != nil {
 		return nil, err
 	}
