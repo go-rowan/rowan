@@ -69,7 +69,7 @@ func Read(path string, argOpts ...Option) (map[string][]any, error) {
 
 		for j, cell := range row {
 			col := headers[j]
-			data[col] = append(data[col], cell)
+			data[col] = append(data[col], inferType(cell))
 		}
 	}
 
