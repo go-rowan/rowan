@@ -26,9 +26,9 @@ func New(data map[string][]any) (*Table, error) {
 	}
 
 	return &Table{
-		Columns: columns,
-		Data:    data,
-		Length:  length,
+		columns: columns,
+		data:    data,
+		length:  length,
 	}, nil
 }
 

@@ -8,13 +8,13 @@ import (
 func columnWidths(t *Table, rows int) map[string]int {
 	widths := make(map[string]int)
 
-	for _, col := range t.Columns {
+	for _, col := range t.Columns() {
 		widths[col] = len(col)
 	}
 
 	for i := 0; i < rows; i++ {
-		for _, col := range t.Columns {
-			val := fmt.Sprint(t.Data[col][i])
+		for _, col := range t.Columns() {
+			val := fmt.Sprint(t.data[col][i])
 			lenVal := len(val)
 			if lenVal > widths[col] {
 				widths[col] = lenVal
@@ -70,8 +70,8 @@ func renderRow(t *Table, row int, widths map[string]int) string {
 	var sb strings.Builder
 	sb.WriteString("|")
 
-	for _, col := range t.Columns {
-		val := t.Data[col][row]
+	for _, col := range t.Columns() {
+		val := t.data[col][row]
 
 		if isNumeric(val) {
 			sb.WriteString(" " + padCenter(fmt.Sprint(val), widths[col]) + " |")
