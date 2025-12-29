@@ -5,14 +5,14 @@ import (
 	"strings"
 )
 
-func columnWidths(t *Table, rows int) map[string]int {
+func columnWidths(t *Table, indexes []int) map[string]int {
 	widths := make(map[string]int)
 
 	for _, col := range t.Columns() {
 		widths[col] = len(col)
 	}
 
-	for i := 0; i < rows; i++ {
+	for _, i := range indexes {
 		for _, col := range t.Columns() {
 			val := fmt.Sprint(t.data[col][i])
 			lenVal := len(val)
