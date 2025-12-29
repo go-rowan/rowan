@@ -11,8 +11,3 @@ func (t *Table) Display() {
 	indexes := firstIndexes(t.Len(), t.Len())
 	displayByIndexes(t, indexes)
 }
-
-func (t *Table) First(n int) {
-	indexes := firstIndexes(n, t.Len())
-	displayByIndexes(t, indexes)
-}
