@@ -3,8 +3,9 @@ package table
 import "fmt"
 
 type Column struct {
-	name string
-	data []any
+	name        string
+	data        []any
+	categorical bool
 }
 
 func (c *Column) Name() string {
@@ -18,13 +19,19 @@ func (c *Column) Values() []any {
 }
 
 func (t *Table) Col(name string) (*Column, error) {
-	data, ok := t.data[name]
+	originData, ok := t.data[name]
 	if !ok {
 		return nil, fmt.Errorf("column %s not found", name)
 	}
 
-	return &Column{
+	data := make([]any, len(originData))
+	copy(data, originData)
+
+	col := &Column{
 		name: name,
 		data: data,
-	}, nil
+	}
+
+	col.categorical = inferCategorical(col.data, 3)
+	return col, nil
 }
