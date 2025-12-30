@@ -1,5 +1,7 @@
 package table
 
+import "math"
+
 func (c *Column) Sum() (float64, bool) {
 	var sum float64
 	found := false
@@ -74,4 +76,38 @@ func (c *Column) Max() (float64, bool) {
 	}
 
 	return max, !firstMark
+}
+
+func (c *Column) Std() (float64, bool) {
+	var (
+		sum         float64
+		count       int
+		numericData = []float64{}
+	)
+
+	for _, v := range c.data {
+		n, ok := numeric(v)
+		if !ok {
+			continue
+		}
+
+		sum += n
+		count++
+		numericData = append(numericData, n)
+	}
+
+	if count < 2 {
+		return 0, false
+	}
+
+	mean := sum / float64(count)
+
+	var squaredDiff float64
+	for _, n := range numericData {
+		diff := n - mean
+		squaredDiff += diff * diff
+	}
+
+	variance := squaredDiff / float64(count-1)
+	return math.Sqrt(variance), true
 }
