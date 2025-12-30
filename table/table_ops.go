@@ -1,5 +1,16 @@
 package table
 
+// MapCol applies the provided function `f` to all values in the specified column
+// of the Table, returning a new Table with the updated column. All other columns
+// remain unchanged. The original Table is not modified.
+//
+// Parameters:
+//   - name: the name of the column to transform
+//   - f: a function that takes an `any` value and returns a transformed `any` value
+//
+// Returns:
+//   - *Table: a new Table with the transformed column
+//   - error: if the specified column does not exist
 func (t *Table) MapCol(name string, f func(any) any) (*Table, error) {
 	oldCol, err := t.Col(name)
 	if err != nil {
@@ -29,6 +40,11 @@ func (t *Table) MapCol(name string, f func(any) any) (*Table, error) {
 	}, nil
 }
 
+// Categorize returns a new Table where each categorical column produces an additional column with encoded integer values.
+//
+// For every categorical column, a new column named "<column>_categorized" is appended. Each unique value in the original column is mapped to a zero-based integer, preserving row order. Non-categorical columns are copied as-is.
+//
+// The original Table is not modified.
 func (t *Table) Categorize() *Table {
 	columnsCount := len(t.columns)
 	data := make(map[string][]any, columnsCount*2)
@@ -72,6 +88,12 @@ func (t *Table) Categorize() *Table {
 	}
 }
 
+// Where filters rows of the Table using a predicate function and returns a new Table containing only rows for which the predicate returns true.
+//
+// The predicate function receives a map representing a single row, where keys are column names and values are the corresponding cell values.
+// All columns are preserved in the resulting Table.
+//
+// Returns an error only if Table construction fails.
 func (t *Table) Where(f func(row map[string]any) bool) (*Table, error) {
 	filtered := make(map[string][]any)
 	cols := t.Columns()
