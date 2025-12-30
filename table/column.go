@@ -35,3 +35,11 @@ func (t *Table) Col(name string) (*Column, error) {
 	col.categorical = inferCategorical(col.data, 3)
 	return col, nil
 }
+
+func (t *Table) MustCol(name string) *Column {
+	col, err := t.Col(name)
+	if err != nil {
+		return &Column{name: name, data: []any{}}
+	}
+	return col
+}

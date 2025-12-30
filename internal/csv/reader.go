@@ -73,5 +73,28 @@ func Read(path string, argOpts ...Option) (map[string][]any, []string, error) {
 		}
 	}
 
+	for _, h := range headers {
+		hasFloat := false
+		for _, v := range data[h] {
+			switch v.(type) {
+			case float64:
+				hasFloat = true
+			}
+
+			if hasFloat {
+				break
+			}
+		}
+
+		if hasFloat {
+			for i, v := range data[h] {
+				switch n := v.(type) {
+				case int64:
+					data[h][i] = float64(n)
+				}
+			}
+		}
+	}
+
 	return data, headers, nil
 }

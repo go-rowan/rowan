@@ -71,3 +71,27 @@ func (t *Table) Categorize() *Table {
 		length:  t.length,
 	}
 }
+
+func (t *Table) Where(f func(row map[string]any) bool) (*Table, error) {
+	filtered := make(map[string][]any)
+	cols := t.Columns()
+
+	for _, c := range cols {
+		filtered[c] = []any{}
+	}
+
+	for i := 0; i < t.Len(); i++ {
+		row := make(map[string]any)
+		for _, c := range cols {
+			row[c] = t.data[c][i]
+		}
+
+		if f(row) {
+			for _, c := range cols {
+				filtered[c] = append(filtered[c], t.data[c][i])
+			}
+		}
+	}
+
+	return New(filtered, cols)
+}
