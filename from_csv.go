@@ -8,10 +8,10 @@ import (
 type CSVOption = csv.Option
 
 func FromCSV(path string, opts ...CSVOption) (*Table, error) {
-	data, err := csv.Read(path, opts...)
+	data, columns, err := csv.Read(path, opts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return table.New(data)
+	return table.New(data, columns)
 }
