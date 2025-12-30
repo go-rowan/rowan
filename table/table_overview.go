@@ -24,7 +24,7 @@ func (t *Table) Overview() {
 		meta["Type"] = append(meta["Type"], columnType(col.Values()))
 	}
 
-	metaTbl, _ := New(meta)
+	metaTbl, _ := New(meta, []string{"Name", "Type"})
 	metaTbl.Display()
 }
 

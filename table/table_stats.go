@@ -45,7 +45,7 @@ func (t *Table) Stats() {
 		statsData["Max"] = append(statsData["Max"], max)
 	}
 
-	statsTable, err := New(statsData)
+	statsTable, err := New(statsData, statsColumns)
 	if err != nil {
 		fmt.Println("failed to create stats table:", err)
 		return
