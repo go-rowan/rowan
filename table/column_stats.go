@@ -1,6 +1,9 @@
 package table
 
-import "math"
+import (
+	"math"
+	"sort"
+)
 
 func (c *Column) Sum() (float64, bool) {
 	var sum float64
@@ -145,4 +148,53 @@ func (c *Column) Missing() int {
 	}
 
 	return missing
+}
+
+func numericSlice(data []any) []float64 {
+	numSlice := make([]float64, 0, len(data))
+
+	for _, v := range data {
+		if n, ok := numeric(v); ok {
+			numSlice = append(numSlice, n)
+		}
+	}
+
+	return numSlice
+}
+
+func (c *Column) Quantile(q float64) (float64, bool) {
+	if q < 0 || q > 1 {
+		return 0, false
+	}
+
+	numSlice := numericSlice(c.data)
+	n := len(numSlice)
+	if n == 0 {
+		return 0, false
+	}
+
+	sort.Float64s(numSlice)
+
+	index := q * float64(n-1)
+	lower := int(math.Floor(index))
+	upper := int(math.Ceil(index))
+
+	if lower == upper {
+		return numSlice[lower], true
+	}
+
+	weight := index - float64(lower)
+	return numSlice[lower]*(1-weight) + numSlice[upper]*weight, true
+}
+
+func (c *Column) Median() (float64, bool) {
+	return c.Quantile(0.5)
+}
+
+func (c *Column) Q1() (float64, bool) {
+	return c.Quantile(0.25)
+}
+
+func (c *Column) Q3() (float64, bool) {
+	return c.Quantile(0.75)
 }
