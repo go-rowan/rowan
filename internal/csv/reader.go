@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-func Read(path string, argOpts ...Option) (map[string][]any, error) {
+func Read(path string, argOpts ...Option) (map[string][]any, []string, error) {
 	f, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer f.Close()
 
@@ -22,7 +22,7 @@ func Read(path string, argOpts ...Option) (map[string][]any, error) {
 
 	scanner := bufio.NewScanner(f)
 	if !scanner.Scan() {
-		return nil, fmt.Errorf("csv: empty file")
+		return nil, nil, fmt.Errorf("csv: empty file")
 	}
 	headerLine := scanner.Text()
 
@@ -38,7 +38,7 @@ func Read(path string, argOpts ...Option) (map[string][]any, error) {
 	}
 
 	if _, err := f.Seek(0, 0); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	r := csv.NewReader(f)
@@ -47,16 +47,16 @@ func Read(path string, argOpts ...Option) (map[string][]any, error) {
 
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if len(records) == 0 {
-		return nil, fmt.Errorf("csv: empty file")
+		return nil, nil, fmt.Errorf("csv: empty file")
 	}
 
 	headers := records[0]
 	lenHeaders := len(headers)
 	if lenHeaders == 0 {
-		return nil, fmt.Errorf("csv: no columns found")
+		return nil, nil, fmt.Errorf("csv: no columns found")
 	}
 
 	data := make(map[string][]any, lenHeaders)
@@ -64,7 +64,7 @@ func Read(path string, argOpts ...Option) (map[string][]any, error) {
 	for i, row := range records[1:] {
 		lenRow := len(row)
 		if lenRow != lenHeaders {
-			return nil, fmt.Errorf("csv: row %d has %d columns, expected %d", i+1, lenRow, lenHeaders)
+			return nil, nil, fmt.Errorf("csv: row %d has %d columns, expected %d", i+1, lenRow, lenHeaders)
 		}
 
 		for j, cell := range row {
@@ -73,5 +73,5 @@ func Read(path string, argOpts ...Option) (map[string][]any, error) {
 		}
 	}
 
-	return data, nil
+	return data, headers, nil
 }
