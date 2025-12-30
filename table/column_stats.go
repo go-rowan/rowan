@@ -111,3 +111,38 @@ func (c *Column) Std() (float64, bool) {
 	variance := squaredDiff / float64(count-1)
 	return math.Sqrt(variance), true
 }
+
+func (c *Column) Count() int {
+	count := 0
+
+	for _, v := range c.data {
+		if v == nil {
+			continue
+		}
+
+		if s, ok := v.(string); ok && s == "" {
+			continue
+		}
+
+		count++
+	}
+
+	return count
+}
+
+func (c *Column) Missing() int {
+	missing := 0
+
+	for _, v := range c.data {
+		if v == nil {
+			missing++
+			continue
+		}
+
+		if s, ok := v.(string); ok && s == "" {
+			missing++
+		}
+	}
+
+	return missing
+}
