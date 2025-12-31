@@ -1,5 +1,7 @@
 package table
 
+import "fmt"
+
 // MapCol applies the provided function `f` to all values in the specified column
 // of the Table, returning a new Table with the updated column. All other columns
 // remain unchanged. The original Table is not modified.
@@ -116,4 +118,61 @@ func (t *Table) Where(f func(row map[string]any) bool) (*Table, error) {
 	}
 
 	return New(filtered, cols)
+}
+
+func (t *Table) AddColumns(args map[string][]any) (*Table, error) {
+	if t == nil {
+		return nil, fmt.Errorf("add columns: table is nil")
+	}
+
+	argsCount := len(args)
+	if argsCount == 0 {
+		return nil, fmt.Errorf("add columns: no columns provided")
+	}
+
+	for name, values := range args {
+		if name == "" {
+			return nil, fmt.Errorf("add columns: column name can not be empty")
+		}
+
+		if _, exists := t.data[name]; exists {
+			return nil, fmt.Errorf("add columns: column %s already exists", name)
+		}
+
+		valuesCount := len(values)
+		if valuesCount != t.length {
+			return nil, fmt.Errorf("add columns: column %s has length %d, expected %d", name, valuesCount, t.length)
+		}
+	}
+
+	data := make(map[string][]any, len(t.data)+argsCount)
+	columns := make([]string, 0, len(t.data)+argsCount)
+
+	for _, c := range t.columns {
+		v := make([]any, len(t.data[c]))
+		copy(v, t.data[c])
+
+		data[c] = v
+		columns = append(columns, c)
+	}
+
+	for name, values := range args {
+		v := make([]any, len(values))
+		copy(v, values)
+
+		data[name] = v
+		columns = append(columns, name)
+	}
+
+	return &Table{
+		columns: columns,
+		data:    data,
+		length:  t.length,
+	}, nil
+}
+
+func (t *Table) AddColumn(name string, values []any) (*Table, error) {
+	return t.AddColumns(map[string][]any{
+		name: values,
+	})
 }
