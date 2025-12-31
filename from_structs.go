@@ -7,6 +7,22 @@ import (
 	"github.com/go-rowan/rowan/table"
 )
 
+// FromStructs constructs a Table from a slice of structs.
+//
+// Each exported struct field becomes a column in the resulting table.
+// The column name is derived from the struct field name by default, or from the `rowan` struct tag if present.
+//
+// Fields tagged with `rowan:"-"` or unexported fields are ignored.
+//
+// Example:
+//
+//	type User struct {
+//	    ID    int    `rowan:"id"`
+//	    Name  string
+//	    Email string `rowan:"-"`
+//	}
+//
+//	tbl, err := rowan.FromStructs([]User{...})
 func FromStructs[T any](rows []T) (*Table, error) {
 	if len(rows) == 0 {
 		return nil, fmt.Errorf("rowan: empty slice")

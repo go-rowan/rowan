@@ -120,6 +120,15 @@ func (t *Table) Where(f func(row map[string]any) bool) (*Table, error) {
 	return New(filtered, cols)
 }
 
+// AddColumns returns a new Table with one or more columns appended.
+//
+// Each entry (key and value) in args represents a new column name and its values.
+// All provided columns must:
+//   - have non-empty names
+//   - not already exist in the table
+//   - have the same number of rows as the table
+//
+// The original table is not modified.
 func (t *Table) AddColumns(args map[string][]any) (*Table, error) {
 	if t == nil {
 		return nil, fmt.Errorf("add columns: table is nil")
@@ -171,6 +180,10 @@ func (t *Table) AddColumns(args map[string][]any) (*Table, error) {
 	}, nil
 }
 
+// AddColumn returns a new Table with a single column appended.
+//
+// This is a convenience wrapper around AddColumns for adding one column.
+// The original table is not modified.
 func (t *Table) AddColumn(name string, values []any) (*Table, error) {
 	return t.AddColumns(map[string][]any{
 		name: values,
