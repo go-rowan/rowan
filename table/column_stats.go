@@ -5,6 +5,9 @@ import (
 	"sort"
 )
 
+// Sum returns the sum of all numeric values in the column.
+//
+// Non-numeric values are ignored. The second return value indicates whether at least one numeric value was found.
 func (c *Column) Sum() (float64, bool) {
 	var sum float64
 	found := false
@@ -22,6 +25,9 @@ func (c *Column) Sum() (float64, bool) {
 	return sum, found
 }
 
+// Mean returns the arithmetic mean of all numeric values in the column.
+//
+// Non-numeric values are ignored. The second return value is false if the column contains no numeric values.
 func (c *Column) Mean() (float64, bool) {
 	var sum float64
 	count := 0
@@ -43,6 +49,9 @@ func (c *Column) Mean() (float64, bool) {
 	return sum / float64(count), true
 }
 
+// Min returns the minimum numeric value in the column.
+//
+// Non-numeric values are ignored. The second return value is false if the column contains no numeric values.
 func (c *Column) Min() (float64, bool) {
 	var min float64
 	firstMark := true
@@ -62,6 +71,9 @@ func (c *Column) Min() (float64, bool) {
 	return min, !firstMark
 }
 
+// Max returns the maximum numeric value in the column.
+//
+// Non-numeric values are ignored. The second return value is false if the column contains no numeric values.
 func (c *Column) Max() (float64, bool) {
 	var max float64
 	firstMark := true
@@ -81,6 +93,9 @@ func (c *Column) Max() (float64, bool) {
 	return max, !firstMark
 }
 
+// Std returns the sample standard deviation of numeric values in the column.
+//
+// Non-numeric values are ignored. The second return value is false if fewer than two numeric values are present.
 func (c *Column) Std() (float64, bool) {
 	var (
 		sum         float64
@@ -115,6 +130,9 @@ func (c *Column) Std() (float64, bool) {
 	return math.Sqrt(variance), true
 }
 
+// Count returns the number of non-missing values in the column.
+//
+// A value is considered missing if it is nil or an empty string.
 func (c *Column) Count() int {
 	count := 0
 
@@ -133,6 +151,9 @@ func (c *Column) Count() int {
 	return count
 }
 
+// Missing returns the number of missing values in the column.
+//
+// A value is considered missing if it is nil or an empty string.
 func (c *Column) Missing() int {
 	missing := 0
 
@@ -162,6 +183,10 @@ func numericSlice(data []any) []float64 {
 	return numSlice
 }
 
+// Quantile returns the q-th quantile of the numeric values in the column.
+//
+// The parameter q must be in the range [0, 1]. Non-numeric values are ignored. Linear interpolation is used between adjacent values.
+// The second return value is false if the column contains no numeric values or if q is out of range.
 func (c *Column) Quantile(q float64) (float64, bool) {
 	if q < 0 || q > 1 {
 		return 0, false
@@ -187,14 +212,23 @@ func (c *Column) Quantile(q float64) (float64, bool) {
 	return numSlice[lower]*(1-weight) + numSlice[upper]*weight, true
 }
 
+// Median returns the median (0.5 quantile) of the numeric values in the column.
+//
+// Non-numeric values are ignored. The second return value is false if the column contains no numeric values.
 func (c *Column) Median() (float64, bool) {
 	return c.Quantile(0.5)
 }
 
+// Q1 returns the first quartile (0.25 quantile) of the numeric values in the column.
+//
+// Non-numeric values are ignored. The second return value is false if the column contains no numeric values.
 func (c *Column) Q1() (float64, bool) {
 	return c.Quantile(0.25)
 }
 
+// Q3 returns the third quartile (0.75 quantile) of the numeric values in the column.
+//
+// Non-numeric values are ignored. The second return value is false if the column contains no numeric values.
 func (c *Column) Q3() (float64, bool) {
 	return c.Quantile(0.75)
 }

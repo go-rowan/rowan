@@ -2,6 +2,13 @@ package table
 
 import "fmt"
 
+// Stats computes and displays descriptive statistics for all numeric columns in the table.
+//
+// The statistics include count, missing values, mean, standard deviation, minimum, quartiles (Q1, median, Q3), and maximum. Only columns containing numeric data are included in the output.
+//
+// The result is rendered as a table and printed directly to stdout.
+// This method does not return a value and does not modify the original table.
+// If the table is nil or empty, a message is printed instead.
 func (t *Table) Stats() {
 	if t == nil || t.Len() == 0 {
 		fmt.Println("table is empty or nil")

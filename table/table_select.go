@@ -2,6 +2,9 @@ package table
 
 import "fmt"
 
+// Select returns a new table containing only the specified columns, preserving their order as provided in the arguments.
+//
+// An error is returned if no columns are specified or if any column does not exist in the table. The original table is not modified.
 func (t *Table) Select(cols ...string) (*Table, error) {
 	argsCount := len(cols)
 	if argsCount == 0 {
@@ -31,6 +34,11 @@ func (t *Table) Select(cols ...string) (*Table, error) {
 	}, nil
 }
 
+// Drop returns a new table with the specified columns removed, while preserving the order of the remaining columns.
+//
+// If no columns are provided, a shallow copy of the table is returned.
+// An error is returned if any specified column does not exist.
+// The original table is not modified.
 func (t *Table) Drop(cols ...string) (*Table, error) {
 	argsCount := len(cols)
 	if argsCount == 0 {
