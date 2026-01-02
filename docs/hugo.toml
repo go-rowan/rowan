@@ -1,0 +1,9 @@
+baseURL = "/rowan/"
+languageCode = "en-us"
+title = "Rowan Documentation"
+theme = "hugo-book"
+
+[params]
+  BookSection = "docs"
+  BookRepo = "https://github.com/go-rowan/rowan"
+  BookEditPath = "edit/main/docs/content"
