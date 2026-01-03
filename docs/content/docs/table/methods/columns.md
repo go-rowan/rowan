@@ -77,7 +77,7 @@ Use `Columns()` when you need to:
 
 ## Related Methods
 
+- [`Len()`](../len) — returns number of rows
 - `Col(name string)`
 - `Select(cols ...string)`
-- `Drop(cols ...string)`
 - `Overview()`

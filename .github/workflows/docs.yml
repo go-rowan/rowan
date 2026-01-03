@@ -2,9 +2,9 @@ name: Deploy Hugo site to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [main]
+    paths:
+      - docs/**
 
 permissions:
   contents: read
@@ -18,10 +18,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
@@ -29,20 +30,19 @@ jobs:
           hugo-version: latest
           extended: true
 
-      - name: Build Hugo site
+      - name: Build Hugo
         run: |
           cd docs
-          hugo --minify --destination ../public
+          hugo --minify --theme hugo-book
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: docs/public
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
