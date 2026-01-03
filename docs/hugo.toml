@@ -1,4 +1,5 @@
 baseURL = "/rowan/"
+relativeURLs = true
 languageCode = "en-us"
 title = "Rowan Documentation"
 theme = "hugo-book"
