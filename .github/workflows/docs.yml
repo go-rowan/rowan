@@ -23,6 +23,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
+      
+      - name: DEBUG — cek theme hugo-book
+        run: |
+          echo "=== isi docs/themes ==="
+          ls -la docs/themes || true
+          echo "=== isi hugo-book ==="
+          ls -la docs/themes/hugo-book || true
+          echo "=== isi layouts ==="
+          ls -la docs/themes/hugo-book/layouts || true
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
