@@ -19,3 +19,12 @@ func (t *Table) copy() *Table {
 		length:  t.length,
 	}
 }
+
+func containsColumn(cols []string, name string) bool {
+	for _, c := range cols {
+		if c == name {
+			return true
+		}
+	}
+	return false
+}
