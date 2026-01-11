@@ -13,7 +13,7 @@ func (c *Column) Sum() (float64, bool) {
 	found := false
 
 	for _, v := range c.data {
-		n, ok := numeric(v)
+		n, ok := asNumeric(v)
 		if !ok {
 			continue
 		}
@@ -33,7 +33,7 @@ func (c *Column) Mean() (float64, bool) {
 	count := 0
 
 	for _, v := range c.data {
-		n, ok := numeric(v)
+		n, ok := asNumeric(v)
 		if !ok {
 			continue
 		}
@@ -57,7 +57,7 @@ func (c *Column) Min() (float64, bool) {
 	firstMark := true
 
 	for _, v := range c.data {
-		n, ok := numeric(v)
+		n, ok := asNumeric(v)
 		if !ok {
 			continue
 		}
@@ -79,7 +79,7 @@ func (c *Column) Max() (float64, bool) {
 	firstMark := true
 
 	for _, v := range c.data {
-		n, ok := numeric(v)
+		n, ok := asNumeric(v)
 		if !ok {
 			continue
 		}
@@ -104,7 +104,7 @@ func (c *Column) Std() (float64, bool) {
 	)
 
 	for _, v := range c.data {
-		n, ok := numeric(v)
+		n, ok := asNumeric(v)
 		if !ok {
 			continue
 		}
@@ -175,7 +175,7 @@ func numericSlice(data []any) []float64 {
 	numSlice := make([]float64, 0, len(data))
 
 	for _, v := range data {
-		if n, ok := numeric(v); ok {
+		if n, ok := asNumeric(v); ok {
 			numSlice = append(numSlice, n)
 		}
 	}

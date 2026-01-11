@@ -28,26 +28,9 @@ func inferCategorical(data []any, maxUnique int) bool {
 
 func isNumericColumn(c *Column) bool {
 	for _, v := range c.data {
-		if _, ok := numeric(v); ok {
+		if _, ok := asNumeric(v); ok {
 			return true
 		}
 	}
 	return false
-}
-
-func toFloat64(v any) (float64, bool) {
-	switch x := v.(type) {
-	case int:
-		return float64(x), true
-	case int32:
-		return float64(x), true
-	case int64:
-		return float64(x), true
-	case float32:
-		return float64(x), true
-	case float64:
-		return x, true
-	default:
-		return 0, false
-	}
 }

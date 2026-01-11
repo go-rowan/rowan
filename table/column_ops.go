@@ -1,6 +1,10 @@
 package table
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/go-rowan/rowan/internal/numeric"
+)
 
 // Map applies the provided function `f` to each value in the Column and returns a new Column containing the results. The original Column remains unchanged.
 //
@@ -25,7 +29,7 @@ func (c *Column) Map(f func(any) any) *Column {
 //
 // The values are rescaled to the range [0, 1] using the formula:
 //
-//   (x - min) / (max - min)
+//	(x - min) / (max - min)
 //
 // Only numeric columns are supported. If the column contains non-numeric values or has zero variance (min == max), an error is returned.
 //
@@ -55,7 +59,7 @@ func (c *Column) Normalize() (*Column, error) {
 			continue
 		}
 
-		x, ok := toFloat64(v)
+		x, ok := numeric.ToFloat64(v)
 		if !ok {
 			return nil, fmt.Errorf("normalize: non-numeric value encountered")
 		}
@@ -74,7 +78,7 @@ func (c *Column) Normalize() (*Column, error) {
 //
 // The values are transformed to have zero mean and unit variance using the formula:
 //
-//   (x - mean) / std
+//	(x - mean) / std
 //
 // Only numeric columns are supported. If the column contains non-numeric values or has zero standard deviation, an error is returned.
 //
@@ -104,7 +108,7 @@ func (c *Column) Standardize() (*Column, error) {
 			continue
 		}
 
-		x, ok := toFloat64(v)
+		x, ok := numeric.ToFloat64(v)
 		if !ok {
 			return nil, fmt.Errorf("standardize: non-numeric value encountered")
 		}
