@@ -33,7 +33,7 @@ func (c *Column) Normalize() (*Column, error) {
 	max, _ := c.Max()
 
 	if min == max {
-		return nil, fmt.Errorf("min equals max")
+		return nil, fmt.Errorf("normalize: min equals max")
 	}
 
 	values := c.Values()
@@ -52,6 +52,45 @@ func (c *Column) Normalize() (*Column, error) {
 
 		n := (x - min) / (max - min)
 		result = append(result, n)
+	}
+
+	return &Column{
+		name: c.name,
+		data: result,
+	}, nil
+}
+
+func (c *Column) Standardize() (*Column, error) {
+	if c == nil || c.Count() == 0 {
+		return nil, fmt.Errorf("standardize: column is empty or nil")
+	}
+
+	mean, ok := c.Mean()
+	if !ok {
+		return nil, fmt.Errorf("standardize: column is not numeric")
+	}
+
+	std, _ := c.Std()
+	if std == 0 {
+		return nil, fmt.Errorf("standardize: standard deviation is zero")
+	}
+
+	values := c.Values()
+	result := make([]any, 0, len(values))
+
+	for _, v := range values {
+		if v == nil {
+			result = append(result, nil)
+			continue
+		}
+
+		x, ok := toFloat64(v)
+		if !ok {
+			return nil, fmt.Errorf("standardize: non-numeric value encountered")
+		}
+
+		s := (x - mean) / std
+		result = append(result, s)
 	}
 
 	return &Column{
