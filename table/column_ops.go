@@ -21,6 +21,16 @@ func (c *Column) Map(f func(any) any) *Column {
 	}
 }
 
+// Normalize performs Min-Max normalization on the column.
+//
+// The values are rescaled to the range [0, 1] using the formula:
+//
+//   (x - min) / (max - min)
+//
+// Only numeric columns are supported. If the column contains non-numeric values or has zero variance (min == max), an error is returned.
+//
+// Normalize does not mutate the original column.
+// A new Column instance with normalized values is returned.
 func (c *Column) Normalize() (*Column, error) {
 	if c == nil || c.Count() == 0 {
 		return nil, fmt.Errorf("normalize: column is empty or nil")
@@ -60,6 +70,16 @@ func (c *Column) Normalize() (*Column, error) {
 	}, nil
 }
 
+// Standardize performs Z-score standardization on the column.
+//
+// The values are transformed to have zero mean and unit variance using the formula:
+//
+//   (x - mean) / std
+//
+// Only numeric columns are supported. If the column contains non-numeric values or has zero standard deviation, an error is returned.
+//
+// Standardize does not mutate the original column.
+// A new Column instance with standardized values is returned.
 func (c *Column) Standardize() (*Column, error) {
 	if c == nil || c.Count() == 0 {
 		return nil, fmt.Errorf("standardize: column is empty or nil")

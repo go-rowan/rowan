@@ -20,3 +20,36 @@ func (t *Table) Columns() []string {
 func (t *Table) Len() int {
 	return t.length
 }
+
+// Clone creates a deep copy of the table.
+//
+// The cloned table has its own copy of column metadata and underlying data slices, so modifications to the returned table do not affect the original table, and vice versa.
+//
+// Clone preserves:
+//   - column order
+//   - column names
+//   - row count
+//
+// This method is intended for non-mutating operations (e.g. normalization, scaling, feature transformation) where a transformed table should be produced without altering the original data.
+func (t *Table) Clone() *Table {
+	if t == nil {
+		return nil
+	}
+
+	data := make(map[string][]any, len(t.data))
+
+	columns := make([]string, len(t.columns))
+	copy(columns, t.columns)
+
+	for _, c := range t.columns {
+		values := make([]any, len(t.data[c]))
+		copy(values, t.data[c])
+		data[c] = values
+	}
+
+	return &Table{
+		columns: columns,
+		data:    data,
+		length:  t.length,
+	}
+}
