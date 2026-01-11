@@ -228,3 +228,42 @@ func (t *Table) Normalize(args ...string) (*Table, error) {
 		length:  t.length,
 	}, nil
 }
+
+func (t *Table) Standardize(args ...string) (*Table, error) {
+	if t == nil {
+		return nil, fmt.Errorf("standardize: table is nil")
+	}
+
+	targetAll := len(args) == 0
+
+	data := make(map[string][]any, len(t.data))
+	columns := make([]string, 0, len(t.columns))
+
+	for _, c := range t.columns {
+		col, err := t.Col(c)
+		if err != nil {
+			return nil, err
+		}
+
+		shouldStandardize := targetAll || containsColumn(args, c)
+
+		if shouldStandardize {
+			sCol, err := col.Standardize()
+			if err == nil {
+				data[c] = sCol.Values()
+			} else {
+				data[c] = col.Values()
+			}
+		} else {
+			data[c] = col.Values()
+		}
+
+		columns = append(columns, c)
+	}
+
+	return &Table{
+		columns: columns,
+		data:    data,
+		length:  t.length,
+	}, nil
+}
