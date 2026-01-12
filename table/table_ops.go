@@ -189,3 +189,33 @@ func (t *Table) AddColumn(name string, values []any) (*Table, error) {
 		name: values,
 	})
 }
+
+// ReplaceColumn replaces the data of an existing column with the provided values.
+//
+// The column must already exist in the table.
+// The length of values must match the table length.
+//
+// This method does not modify the column order.
+func (t *Table) ReplaceColumn(name string, values []any) error {
+	if t.data == nil {
+		return fmt.Errorf("replace column: table has no data")
+	}
+
+	if _, ok := t.data[name]; !ok {
+		return fmt.Errorf("replace column: column %s does not exist", name)
+	}
+
+	valuesCount := len(values)
+	if valuesCount != t.length {
+		return fmt.Errorf(
+			"replace column: length mismatch for column %s got %d, expected %d",
+			name, valuesCount, t.length,
+		)
+	}
+
+	data := make([]any, valuesCount)
+	copy(data, values)
+
+	t.data[name] = data
+	return nil
+}

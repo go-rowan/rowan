@@ -28,7 +28,7 @@ func inferCategorical(data []any, maxUnique int) bool {
 
 func isNumericColumn(c *Column) bool {
 	for _, v := range c.data {
-		if _, ok := numeric(v); ok {
+		if _, ok := asNumeric(v); ok {
 			return true
 		}
 	}
