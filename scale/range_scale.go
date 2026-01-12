@@ -119,3 +119,17 @@ func (s *RangeScaler) Transform(t *table.Table, columns ...string) (*table.Table
 
 	return result, nil
 }
+
+// Min returns the minimum value learned for the specified column during Fit.
+// The boolean return value indicates whether the column was present and fitted.
+func (s *RangeScaler) Min(column string) (float64, bool) {
+	v, ok := s.min[column]
+	return v, ok
+}
+
+// Max returns the maximum value learned for the specified column during Fit.
+// The boolean return value indicates whether the column was present and fitted.
+func (s *RangeScaler) Max(column string) (float64, bool) {
+	v, ok := s.max[column]
+	return v, ok
+}

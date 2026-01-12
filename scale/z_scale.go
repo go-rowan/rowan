@@ -109,3 +109,17 @@ func (s *ZScaler) Transform(t *table.Table, columns ...string) (*table.Table, er
 
 	return result, nil
 }
+
+// Mean returns the mean value learned for the specified column during Fit.
+// The boolean return value indicates whether the column was present and fitted.
+func (s *ZScaler) Mean(column string) (float64, bool) {
+	v, ok := s.mean[column]
+	return v, ok
+}
+
+// Std returns the standard deviation learned for the specified column during Fit.
+// The boolean return value indicates whether the column was present and fitted.
+func (s *ZScaler) Std(column string) (float64, bool) {
+	v, ok := s.std[column]
+	return v, ok
+}
