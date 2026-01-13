@@ -166,3 +166,12 @@ func (s *ZScaler) Std(column string) (float64, bool) {
 func (s *ZScaler) IsFitted() bool {
 	return len(s.features) > 0
 }
+
+// Reset clears all learned statistics and fitted features from the scaler.
+//
+// After calling Reset, the scaler returns to its initial state and must be fitted again using Fit before Transform can be called.
+func (s *ZScaler) Reset() {
+	s.features = make([]string, 0)
+	s.mean = make(map[string]float64)
+	s.std = make(map[string]float64)
+}

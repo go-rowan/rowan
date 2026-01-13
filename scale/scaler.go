@@ -7,4 +7,5 @@ type Scaler interface {
 	Transform(*table.Table, ...string) (*table.Table, error)
 	Features() []string
 	IsFitted() bool
+	Reset()
 }

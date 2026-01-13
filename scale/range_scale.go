@@ -176,3 +176,12 @@ func (s *RangeScaler) Max(column string) (float64, bool) {
 func (s *RangeScaler) IsFitted() bool {
 	return len(s.features) > 0
 }
+
+// Reset clears all learned statistics and fitted features from the scaler.
+//
+// After calling Reset, the scaler returns to its initial state and must be fitted again using Fit before Transform can be called.
+func (s *RangeScaler) Reset() {
+	s.features = make([]string, 0)
+	s.min = make(map[string]float64)
+	s.max = make(map[string]float64)
+}
