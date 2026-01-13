@@ -168,3 +168,11 @@ func (s *RangeScaler) Max(column string) (float64, bool) {
 	v, ok := s.max[column]
 	return v, ok
 }
+
+// IsFitted reports whether the scaler has been fitted with at least one feature.
+//
+// It returns true if Fit has been successfully called and at least one column's statistics (min and max) have been stored.
+// Otherwise, it returns false.
+func (s *RangeScaler) IsFitted() bool {
+	return len(s.features) > 0
+}

@@ -158,3 +158,11 @@ func (s *ZScaler) Std(column string) (float64, bool) {
 	v, ok := s.std[column]
 	return v, ok
 }
+
+// IsFitted reports whether the scaler has been fitted with at least one feature.
+//
+// It returns true if Fit has been successfully called and at least one column's statistics (mean and standard deviation) have been stored.
+// Otherwise, it returns false.
+func (s *ZScaler) IsFitted() bool {
+	return len(s.features) > 0
+}
