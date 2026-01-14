@@ -12,6 +12,7 @@ import (
 // It scales numeric values in specified columns to a normalized range, typically [0, 1], using statistics learned during the Fit phase.
 //
 // The scaler stores per-column minimum and maximum values computed from a Table, and applies the transformation in a non-mutating manner during Transform.
+// It also stores the name of columns being fitted in a slice of string.
 //
 // Formula:
 //
@@ -19,8 +20,9 @@ import (
 //
 // RangeScaler is stateful: Fit must be called before Transform.
 type RangeScaler struct {
-	min map[string]float64
-	max map[string]float64
+	features []string
+	min      map[string]float64
+	max      map[string]float64
 }
 
 // NewRangeScaler creates and initializes a new RangeScaler instance.
@@ -28,8 +30,9 @@ type RangeScaler struct {
 // The returned scaler has empty internal state and must be fitted using Fit before it can be used to transform data.
 func NewRangeScaler() *RangeScaler {
 	return &RangeScaler{
-		min: make(map[string]float64),
-		max: make(map[string]float64),
+		features: make([]string, 0),
+		min:      make(map[string]float64),
+		max:      make(map[string]float64),
 	}
 }
 
@@ -50,6 +53,10 @@ func NewRangeScaler() *RangeScaler {
 //   - Fit must be called before Transform.
 //   - Calling Fit multiple times overwrites previously stored statistics for the specified columns.
 func (s *RangeScaler) Fit(t *table.Table, columns ...string) error {
+	if t == nil {
+		return fmt.Errorf("fit: table is nil")
+	}
+
 	for _, c := range columns {
 		col, err := t.Col(c)
 		if err != nil {
@@ -64,6 +71,8 @@ func (s *RangeScaler) Fit(t *table.Table, columns ...string) error {
 
 		s.min[c] = min
 		s.max[c] = max
+
+		s.features = append(s.features, c)
 	}
 
 	return nil
@@ -88,18 +97,33 @@ func (s *RangeScaler) Fit(t *table.Table, columns ...string) error {
 //     (x - min) / (max - min)
 //   - Columns with zero range (min == max) result in an error to avoid division by zero.
 func (s *RangeScaler) Transform(t *table.Table, columns ...string) (*table.Table, error) {
+	if t == nil {
+		return nil, fmt.Errorf("transform: table is nil")
+	}
+
+	features := columns
+	if len(features) == 0 {
+		features = s.features
+	}
+	if len(features) == 0 {
+		return nil, fmt.Errorf("transform: no columns specified and scaler has no fitted features")
+	}
+
 	result := t.Clone()
 
-	for _, c := range columns {
-		col, err := result.Col(c)
+	for _, feat := range features {
+		col, err := result.Col(feat)
 		if err != nil {
 			return nil, err
 		}
 
-		min := s.min[c]
-		max := s.max[c]
-		r := max - min
+		min, okMin := s.min[feat]
+		max, okMax := s.max[feat]
+		if !okMin || !okMax {
+			return nil, fmt.Errorf("transform: column %s was not fitted", feat)
+		}
 
+		r := max - min
 		if r == 0 {
 			return nil, fmt.Errorf("transform: cannot scale column with zero range")
 		}
@@ -112,12 +136,23 @@ func (s *RangeScaler) Transform(t *table.Table, columns ...string) (*table.Table
 			return (f - min) / r
 		})
 
-		if err := result.ReplaceColumn(c, mapped.Values()); err != nil {
+		if err := result.ReplaceColumn(feat, mapped.Values()); err != nil {
 			return nil, err
 		}
 	}
 
 	return result, nil
+}
+
+// Features returns the list of column names that were fitted by the scaler.
+//
+// The returned slice represents the features learned during the Fit step and is used as the default set of columns when Transform is called without explicitly specifying columns.
+//
+// A copy of the underlying slice is returned, so modifying the result will not affect the scaler's internal state.
+func (s *RangeScaler) Features() []string {
+	features := make([]string, len(s.features))
+	copy(features, s.features)
+	return features
 }
 
 // Min returns the minimum value learned for the specified column during Fit.
@@ -132,4 +167,21 @@ func (s *RangeScaler) Min(column string) (float64, bool) {
 func (s *RangeScaler) Max(column string) (float64, bool) {
 	v, ok := s.max[column]
 	return v, ok
+}
+
+// IsFitted reports whether the scaler has been fitted with at least one feature.
+//
+// It returns true if Fit has been successfully called and at least one column's statistics (min and max) have been stored.
+// Otherwise, it returns false.
+func (s *RangeScaler) IsFitted() bool {
+	return len(s.features) > 0
+}
+
+// Reset clears all learned statistics and fitted features from the scaler.
+//
+// After calling Reset, the scaler returns to its initial state and must be fitted again using Fit before Transform can be called.
+func (s *RangeScaler) Reset() {
+	s.features = make([]string, 0)
+	s.min = make(map[string]float64)
+	s.max = make(map[string]float64)
 }

@@ -1,13 +1,17 @@
-package csv
+package sheets
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/go-rowan/rowan/internal/parser"
 )
 
-func Read(path string, argOpts ...Option) (map[string][]any, []string, error) {
-	source := NewCSVSource(path, argOpts...)
+func Read(ctx context.Context, spreadsheet string, argOpts ...Option) (map[string][]any, []string, error) {
+	source, err := NewSheetsSource(ctx, spreadsheet, argOpts...)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	columns, rows, err := source.Read()
 	if err != nil {
@@ -20,7 +24,7 @@ func Read(path string, argOpts ...Option) (map[string][]any, []string, error) {
 	for i, row := range rows {
 		rowsCount := len(row)
 		if rowsCount != columnsCount {
-			return nil, nil, fmt.Errorf("csv: row %d has %d columns, expected %d", i+1, rowsCount, columnsCount)
+			return nil, nil, fmt.Errorf("sheets: row %d has %d columns, expected %d", i+1, rowsCount, columnsCount)
 		}
 
 		for j, cell := range row {
