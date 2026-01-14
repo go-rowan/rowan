@@ -7,7 +7,7 @@ type options struct {
 
 type Option func(*options)
 
-func WithSheetsURL(url string) Option {
+func WithSheetsURL() Option {
 	return func(o *options) {
 		o.isURL = true
 	}
