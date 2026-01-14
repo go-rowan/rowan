@@ -3,6 +3,7 @@ package sheets
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
@@ -52,7 +53,7 @@ func (s *SheetsSource) Read() ([]string, [][]string, error) {
 
 	resp, err := s.service.Spreadsheets.Values.Get(s.spreadsheetID, s.rangeA1).Do()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, wrapError(err)
 	}
 
 	if len(resp.Values) == 0 {
@@ -85,4 +86,23 @@ func (s *SheetsSource) Read() ([]string, [][]string, error) {
 	}
 
 	return headers, rows, nil
+}
+
+func wrapError(err error) error {
+	msg := err.Error()
+
+	switch {
+	case strings.Contains(msg, "SERVICE_DISABLED"):
+		return &Error{Kind: ErrAPIDisabled, Err: err}
+
+	case strings.Contains(msg, "quota project"):
+		return &Error{Kind: ErrQuotaProject, Err: err}
+
+	case strings.Contains(msg, "ACCESS_TOKEN_SCOPE_INSUFFICIENT"),
+		strings.Contains(msg, "insufficientPermissions"):
+		return &Error{Kind: ErrUnauthorized, Err: err}
+
+	default:
+		return &Error{Kind: ErrUnknown, Err: err}
+	}
 }

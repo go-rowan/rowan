@@ -19,9 +19,6 @@ func Read(ctx context.Context, spreadsheet string, argOpts ...Option) (map[strin
 	}
 	columnsCount := len(columns)
 
-	fmt.Printf("columns: %v\n", columns)
-	fmt.Printf("rows: %v\n", rows)
-
 	data := make(map[string][]any, columnsCount)
 
 	for i, row := range rows {
