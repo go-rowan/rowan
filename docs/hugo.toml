@@ -1,4 +1,4 @@
-baseURL = "/rowan/"
+baseURL = "https://go-rowan.github.io/rowan/"
 relativeURLs = true
 languageCode = "en-us"
 title = "Rowan Documentation"
