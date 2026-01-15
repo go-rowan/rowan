@@ -2,6 +2,7 @@ package rowan
 
 import (
 	"github.com/go-rowan/rowan/internal/csv"
+	"github.com/go-rowan/rowan/internal/excel"
 	"github.com/go-rowan/rowan/internal/sheets"
 )
 
@@ -18,6 +19,11 @@ func WithSheetsURL() SheetsOption {
 }
 
 // WithRange specifies the A1 notation range to read from the sheet (e.g. "Sheet1!A1:D100").
-func WithRange(rangeA1 string) SheetsOption {
+func WithSheetsRange(rangeA1 string) SheetsOption {
 	return sheets.WithRange(rangeA1)
+}
+
+// WithRange specifies the A1 notation range to read from the sheet (e.g. "Sheet1!A1:D100").
+func WithExcelRange(rangeA1 string) ExcelOption {
+	return excel.WithRange(rangeA1)
 }

@@ -1,11 +1,12 @@
-package csv
+package excel
 
-import (
-	"github.com/go-rowan/rowan/internal/parser"
-)
+import "github.com/go-rowan/rowan/internal/parser"
 
 func Read(path string, argOpts ...Option) (map[string][]any, []string, error) {
-	source := NewCSVSource(path, argOpts...)
+	source, err := NewExcelSource(path, argOpts...)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	columns, rows, err := source.Read()
 	if err != nil {
