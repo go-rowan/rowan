@@ -2,6 +2,10 @@ package table
 
 import "fmt"
 
+// Overview prints a summary of the table to the standard output.
+//
+// It displays the total number of rows and a metadata table describing each column, including its name and inferred data type.
+// If the table is nil, the string "nil" is printed instead.
 func (t *Table) Overview() {
 	if t == nil {
 		fmt.Println("nil")
@@ -24,7 +28,7 @@ func (t *Table) Overview() {
 		meta["Type"] = append(meta["Type"], columnType(col.Values()))
 	}
 
-	metaTbl, _ := New(meta)
+	metaTbl, _ := New(meta, []string{"Name", "Type"})
 	metaTbl.Display()
 }
 

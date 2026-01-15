@@ -1,0 +1,57 @@
+name: Deploy Hugo site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/**
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      
+      - name: DEBUG — cek theme hugo-book
+        run: |
+          echo "=== isi docs/themes ==="
+          ls -la docs/themes || true
+          echo "=== isi hugo-book ==="
+          ls -la docs/themes/hugo-book || true
+          echo "=== isi layouts ==="
+          ls -la docs/themes/hugo-book/layouts || true
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: latest
+          extended: true
+
+      - name: Build Hugo
+        run: |
+          cd docs
+          hugo --minify --theme hugo-book --destination public
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

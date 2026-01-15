@@ -74,7 +74,14 @@ func renderRow(t *Table, row int, widths map[string]int) string {
 		val := t.data[col][row]
 
 		if isNumeric(val) {
-			sb.WriteString(" " + padCenter(fmt.Sprint(val), widths[col]) + " |")
+			var strVal string
+			switch v := val.(type) {
+			case float64, float32:
+				strVal = fmt.Sprintf("%.2f", v)
+			default:
+				strVal = fmt.Sprint(v)
+			}
+			sb.WriteString(" " + padCenter(strVal, widths[col]) + " |")
 		} else {
 			sb.WriteString(" " + padRight(fmt.Sprint(val), widths[col]) + " |")
 		}

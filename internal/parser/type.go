@@ -1,4 +1,4 @@
-package csv
+package parser
 
 import (
 	"strconv"
@@ -9,7 +9,7 @@ func inferType(s string) any {
 	s = strings.TrimSpace(s)
 
 	if result, err := strconv.ParseBool(s); err == nil {
-		if s == "true" || s == "false" {
+		if strings.ToLower(s) == "true" || strings.ToLower(s) == "false" {
 			return result
 		}
 	}
