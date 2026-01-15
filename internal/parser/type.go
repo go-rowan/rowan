@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func InferType(s string) any {
+func inferType(s string) any {
 	s = strings.TrimSpace(s)
 
 	if result, err := strconv.ParseBool(s); err == nil {
