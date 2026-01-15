@@ -42,7 +42,7 @@ jobs:
       - name: Build Hugo
         run: |
           cd docs
-          hugo --minify --theme hugo-book
+          hugo --minify --theme hugo-book --destination public
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
