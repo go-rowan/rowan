@@ -14,7 +14,6 @@ type SheetsSource struct {
 	service       *sheets.Service
 	spreadsheetID string
 	rangeA1       string
-	opts          options
 }
 
 func NewSheetsSource(ctx context.Context, spreadsheet string, argOpts ...Option) (*SheetsSource, error) {
