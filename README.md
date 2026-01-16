@@ -6,7 +6,7 @@ Rowan is a Go library for working with tabular data. It provides a simple `Table
 ## Quick Start
 The example below demonstrates creating a `Table`, applying a scaler, and exporting the result.
 
-Download this excel file ([sample.xlsx](https://raw.githubusercontent.com/go-rowan/rowan/main/docs/assets/sample.xlsx)) to follow the example!
+Download this excel file ([sample.xlsx](https://raw.githubusercontent.com/go-rowan/rowan/main/docs/static/assets/sample.xlsx)) to follow the example!
 
 ```go
 tbl, err := rowan.FromExcel("docs/assets/sample.xlsx")
