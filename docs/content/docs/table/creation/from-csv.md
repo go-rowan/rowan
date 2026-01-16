@@ -118,7 +118,7 @@ Columns:
 
 ## See Also
 
-- [`FromExcel()`](../from-excel) — constructs a `Table` from an Excel file
-- [`FromStructs()`](../from-structs) — constructs a `Table` from a slice of structs
+- [`FromExcel(path string, argOpts ...ExcelOption)`](../from-excel) — constructs a `Table` from an Excel file
+- [`FromStructs(rows []T)`](../from-structs) — constructs a `Table` from a slice of structs
 - `Overview()`
 - `Display()`

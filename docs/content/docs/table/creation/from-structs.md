@@ -120,7 +120,7 @@ Columns:
 
 ## See Also
 
-- `New()`
-- [`FromCSV()`](../from-csv) — constructs a `Table` from a CSV file
+- `New(data map[string][]any, columnsOrder ...[]string)`
+- [`FromCSV(path string, opts ...CSVOption)`](../from-csv) — constructs a `Table` from a CSV file
 - `Overview()`
 - `Display()`
