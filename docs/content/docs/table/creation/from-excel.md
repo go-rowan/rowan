@@ -75,7 +75,7 @@ FromExcel(path string, opts ...ExcelOption) (*Table, error)
 See this example for practical usage of `FromExcel()`.
 
 Assume we have an Excel file named "data.xlsx" which contains data as below:
-![Excel data](/assets/from-excel-example.png)
+![Excel data](/rowan/assets/from-excel-example.png)
 
 The following code will read the file and construct a `Table`
 
@@ -114,7 +114,7 @@ Columns:
 
 ## See Also
 
-- [`FromCSV()`](../from-csv) — constructs a `Table` from a CSV file
-- [`FromStructs()`](../from-structs) — constructs a `Table` from a slice of structs
+- [`FromCSV(path string, opts ...CSVOption)`](../from-csv) — constructs a `Table` from a CSV file
+- [`FromStructs(rows []T)`](../from-structs) — constructs a `Table` from a slice of structs
 - `Overview()`
 - `Display()`
