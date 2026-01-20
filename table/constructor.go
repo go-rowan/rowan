@@ -65,6 +65,41 @@ func New(data map[string][]any, columnsOrder ...[]string) (*Table, error) {
 	}, nil
 }
 
-func NewFromStructs[T any](rows []T) (*Table, error) {
-	return nil, nil
+// NewEmptyTable creates and returns a completely empty Table.
+// The table has no columns and no rows.
+// This can be used as a placeholder or initial value when no column information is available.
+//
+// Example:
+//   t := NewEmptyTable()
+//   fmt.Println(t.Length())   // 0
+//   fmt.Println(t.Columns())  // []
+func NewEmptyTable() *Table {
+	return &Table{
+		columns: []string{},
+		data:    map[string][]any{},
+		length:  0,
+	}
+}
+
+// EmptyTableFrom creates and returns a new empty Table with the same column headers as the given Table. The returned Table has zero rows, but preserves the column names.
+// This is useful for operations like SelectRows([]int{}) or filtering that result in no rows.
+//
+// Example:
+//   t2 := EmptyTableFrom(t)
+//   fmt.Println(t2.Length())   // 0
+//   fmt.Println(t2.Columns())  // same as t.Columns()
+func EmptyTableFrom(t *Table) *Table {
+	columns := make([]string, 0, len(t.columns))
+	data := make(map[string][]any, len(t.columns))
+
+	for _, c := range t.columns {
+		columns = append(columns, c)
+		data[c] = []any{}
+	}
+
+	return &Table{
+		columns: columns,
+		data:    data,
+		length:  0,
+	}
 }

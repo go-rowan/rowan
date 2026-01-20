@@ -60,7 +60,7 @@ func (t *Table) Sample(n ...int) *Table {
 func (t *Table) SelectRows(indexes []int) (*Table, error) {
 	indexCount := len(indexes)
 	if indexCount == 0 {
-		// return empty table
+		return EmptyTableFrom(t), nil
 	}
 
 	data := make(map[string][]any, len(t.columns))
@@ -80,7 +80,7 @@ func (t *Table) SelectRows(indexes []int) (*Table, error) {
 		data[c] = col
 	}
 
-	return New(data)
+	return New(data, t.columns)
 }
 
 // MustSelectRows returns a new Table containing only the rows specified by the given indices.
@@ -92,7 +92,7 @@ func (t *Table) SelectRows(indexes []int) (*Table, error) {
 func (t *Table) MustSelectRows(indexes []int) *Table {
 	indexCount := len(indexes)
 	if indexCount == 0 {
-		// return empty table
+		return EmptyTableFrom(t)
 	}
 
 	data := make(map[string][]any, len(t.columns))
