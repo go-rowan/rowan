@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-func columnWidths(t *Table, indexes []int) map[string]int {
-	widths := make(map[string]int)
+func columnWidths(t *Table, indexes []int) map[any]int {
+	widths := make(map[any]int)
 
 	for _, col := range t.Columns() {
 		widths[col] = len(col)
@@ -14,6 +14,7 @@ func columnWidths(t *Table, indexes []int) map[string]int {
 
 	for _, i := range indexes {
 		for _, col := range t.Columns() {
+
 			val := fmt.Sprint(t.data[col][i])
 			lenVal := len(val)
 			if lenVal > widths[col] {
@@ -25,7 +26,47 @@ func columnWidths(t *Table, indexes []int) map[string]int {
 	return widths
 }
 
-func renderHeader(cols []string, widths map[string]int) string {
+func columnWidthsTranspose(t *Table) map[any]int {
+	widths := make(map[any]int)
+
+	columns := t.Columns()
+
+	widths[0] = 0
+	for _, col := range columns {
+		lenCol := len(col)
+		if lenCol > widths[0] {
+			widths[0] = lenCol
+		}
+	}
+
+	for i := range t.Len() + 1 {
+		maxLen := 0
+
+		if i == 0 {
+			for _, c := range t.columns {
+				lenVal := len(c)
+				if lenVal > maxLen {
+					maxLen = lenVal
+				}
+			}
+			continue
+		}
+
+		for _, c := range t.columns {
+			val := fmt.Sprint(t.data[c][i-1])
+			lenVal := len(val)
+			if lenVal > maxLen {
+				maxLen = lenVal
+			}
+		}
+
+		widths[i] = maxLen
+	}
+
+	return widths
+}
+
+func renderHeader(cols []string, widths map[any]int) string {
 	var sb strings.Builder
 	sb.WriteString("|")
 
@@ -55,7 +96,7 @@ func padCenter(s string, colWidth int) string {
 	return strings.Repeat(" ", left) + s + strings.Repeat(" ", right)
 }
 
-func renderSeparator(cols []string, widths map[string]int) string {
+func renderSeparator(cols []string, widths map[any]int) string {
 	var sb strings.Builder
 	sb.WriteString("-")
 
@@ -66,25 +107,57 @@ func renderSeparator(cols []string, widths map[string]int) string {
 	return sb.String()
 }
 
-func renderRow(t *Table, row int, widths map[string]int) string {
+func renderSeparatorTranspose(widths map[any]int) string {
+	var sb strings.Builder
+	sb.WriteString("-")
+
+	for _, width := range widths {
+		sb.WriteString(strings.Repeat("-", width+3))
+	}
+
+	return sb.String()
+}
+
+func renderCell(value any, width int) string {
+	var s string
+
+	if isNumeric(value) {
+		var strVal string
+		switch v := value.(type) {
+		case float64, float32:
+			strVal = fmt.Sprintf("%.2f", v)
+		default:
+			strVal = fmt.Sprint(v)
+		}
+		s = " " + padCenter(strVal, width) + " |"
+	} else {
+		s = " " + padRight(fmt.Sprint(value), width) + " |"
+	}
+
+	return s
+}
+
+func renderRow(t *Table, row int, widths map[any]int) string {
 	var sb strings.Builder
 	sb.WriteString("|")
 
 	for _, col := range t.Columns() {
 		val := t.data[col][row]
 
-		if isNumeric(val) {
-			var strVal string
-			switch v := val.(type) {
-			case float64, float32:
-				strVal = fmt.Sprintf("%.2f", v)
-			default:
-				strVal = fmt.Sprint(v)
-			}
-			sb.WriteString(" " + padCenter(strVal, widths[col]) + " |")
-		} else {
-			sb.WriteString(" " + padRight(fmt.Sprint(val), widths[col]) + " |")
-		}
+		// if isNumeric(val) {
+		// 	var strVal string
+		// 	switch v := val.(type) {
+		// 	case float64, float32:
+		// 		strVal = fmt.Sprintf("%.2f", v)
+		// 	default:
+		// 		strVal = fmt.Sprint(v)
+		// 	}
+		// 	sb.WriteString(" " + padCenter(strVal, widths[col]) + " |")
+		// } else {
+		// 	sb.WriteString(" " + padRight(fmt.Sprint(val), widths[col]) + " |")
+		// }
+
+		sb.WriteString(renderCell(val, widths[col]))
 	}
 
 	return sb.String()

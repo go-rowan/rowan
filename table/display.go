@@ -15,3 +15,12 @@ func (t *Table) Display() {
 	indexes := firstIndexes(t.Len(), t.Len())
 	displayByIndexes(t, indexes)
 }
+
+func (t *Table) DisplayTranspose() {
+	if t == nil {
+		fmt.Println("nil")
+		return
+	}
+
+	displayTranspose(t)
+}
