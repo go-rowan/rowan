@@ -14,8 +14,7 @@ func columnWidths(t *Table, indexes []int) map[any]int {
 
 	for _, i := range indexes {
 		for _, col := range t.Columns() {
-
-			val := fmt.Sprint(t.data[col][i])
+			val := stringValue(t.data[col][i])
 			lenVal := len(val)
 			if lenVal > widths[col] {
 				widths[col] = lenVal
@@ -118,17 +117,24 @@ func renderSeparatorTranspose(widths map[any]int) string {
 	return sb.String()
 }
 
+func stringValue(value any) string {
+	var strVal string
+
+	switch v := value.(type) {
+	case float64, float32:
+		strVal = fmt.Sprintf("%.2f", v)
+	default:
+		strVal = fmt.Sprint(v)
+	}
+
+	return strVal
+}
+
 func renderCell(value any, width int) string {
 	var s string
 
 	if isNumeric(value) {
-		var strVal string
-		switch v := value.(type) {
-		case float64, float32:
-			strVal = fmt.Sprintf("%.2f", v)
-		default:
-			strVal = fmt.Sprint(v)
-		}
+		strVal := stringValue(value)
 		s = " " + padCenter(strVal, width) + " |"
 	} else {
 		s = " " + padRight(fmt.Sprint(value), width) + " |"
@@ -143,20 +149,6 @@ func renderRow(t *Table, row int, widths map[any]int) string {
 
 	for _, col := range t.Columns() {
 		val := t.data[col][row]
-
-		// if isNumeric(val) {
-		// 	var strVal string
-		// 	switch v := val.(type) {
-		// 	case float64, float32:
-		// 		strVal = fmt.Sprintf("%.2f", v)
-		// 	default:
-		// 		strVal = fmt.Sprint(v)
-		// 	}
-		// 	sb.WriteString(" " + padCenter(strVal, widths[col]) + " |")
-		// } else {
-		// 	sb.WriteString(" " + padRight(fmt.Sprint(val), widths[col]) + " |")
-		// }
-
 		sb.WriteString(renderCell(val, widths[col]))
 	}
 
