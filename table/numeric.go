@@ -97,3 +97,46 @@ func (t *Table) MustNumericSlice(columnIndex int) []float64 {
 
 	return result
 }
+
+// ColumnToIntSlice retrieves all values from the specified column and converts them to a slice of int.
+//
+// It can handle various numeric types (int, int64, float64, etc.), but will truncate any decimal points.
+//
+// Returns an error if the table is nil, the column does not exist, or a value cannot be converted.
+func (t *Table) ColumnToIntSlice(column string) ([]int, error) {
+	if t == nil || t.data == nil {
+		return nil, errors.New("table is nil")
+	}
+
+	col, err := t.Col(column)
+	if err != nil {
+		return nil, err
+	}
+
+	data := col.Values()
+
+	intData := make([]int, len(data))
+
+	for i, val := range data {
+		floatVal, ok := numeric.ToFloat64(val)
+		if !ok {
+			return nil, fmt.Errorf("row %d in column %s has unsupported type: %T", i, column, val)
+		}
+
+		intData[i] = int(floatVal)
+	}
+
+	return intData, nil
+}
+
+// MustColumnToIntSlice is a convenience wrapper for ColumnToIntSlice that panics if an error occurs.
+//
+// Use this only when you are certain the column exists and contains valid numeric data.
+func (t *Table) MustColumnToIntSlice(column string) []int {
+	intData, err := t.ColumnToIntSlice(column)
+	if err != nil {
+		panic(err)
+	}
+
+	return intData
+}
