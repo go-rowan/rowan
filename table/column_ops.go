@@ -1,6 +1,7 @@
 package table
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/go-rowan/rowan/internal/numeric"
@@ -120,5 +121,24 @@ func (c *Column) Standardize() (*Column, error) {
 	return &Column{
 		name: c.name,
 		data: result,
+	}, nil
+}
+
+// Categorize returns a new Column with encoded integer values.
+//
+// The new column named "<column>_categorized" is appended. Each unique value in the original column is mapped to a zero-based integer, preserving row order.
+//
+// The original Column is not modified.
+func (c *Column) Categorize() (*Column, error) {
+	if !c.categorical {
+		return nil, errors.New("column categorize: not a categorical column")
+	}
+
+	ctgData, headerName := categorize(c.name, c.Values())
+
+	return &Column{
+		name:        headerName,
+		data:        ctgData,
+		categorical: true,
 	}, nil
 }

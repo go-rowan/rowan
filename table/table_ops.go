@@ -66,19 +66,8 @@ func (t *Table) Categorize() *Table {
 			continue
 		}
 
-		ctgMap := make(map[any]int)
-		ctgData := make([]any, len(originData))
-		index := 0
+		ctgData, headerName := categorize(c, d)
 
-		for i, v := range originData {
-			if _, ok := ctgMap[v]; !ok {
-				ctgMap[v] = index
-				index++
-			}
-			ctgData[i] = ctgMap[v]
-		}
-
-		headerName := c + "_categorized"
 		data[headerName] = ctgData
 		columns = append(columns, headerName)
 	}
@@ -88,6 +77,24 @@ func (t *Table) Categorize() *Table {
 		data:    data,
 		length:  t.length,
 	}
+}
+
+func categorize(name string, data []any) ([]any, string) {
+	ctgData := make([]any, len(data))
+
+	ctgMap := make(map[any]int)
+	index := 0
+
+	for i, v := range data {
+		if _, ok := ctgMap[v]; !ok {
+			ctgMap[v] = index
+			index++
+		}
+
+		ctgData[i] = ctgMap[v]
+	}
+
+	return ctgData, name + "_categorized"
 }
 
 // Where filters rows of the Table using a predicate function and returns a new Table containing only rows for which the predicate returns true.
