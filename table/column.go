@@ -56,3 +56,8 @@ func (t *Table) MustCol(name string) *Column {
 	}
 	return col
 }
+
+// Categorical returns the boolean "categorical" state that is set when constructing Column.
+func (c *Column) Categorical() bool {
+	return c.categorical
+}
