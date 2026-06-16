@@ -78,3 +78,16 @@ func (t *Table) RenameColumns(nameMap map[string]string) error {
 
 	return nil
 }
+
+// RenameColumnsFunc renames all columns using the provided transformation function.
+//
+// It returns an error if the transformation results in duplicate column names or invalid states. If any rename fails, no changes are applied.
+func (t *Table) RenameColumnsFunc(fn func(oldName string) string) error {
+	nameMap := make(map[string]string)
+
+	for _, c := range t.columns {
+		nameMap[c] = fn(c)
+	}
+
+	return t.RenameColumns(nameMap)
+}
