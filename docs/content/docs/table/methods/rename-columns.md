@@ -105,5 +105,5 @@ Output:
 
 - [`(*Table).Columns()`](../columns) - gives a slice of the column name
 - [`(*Table).RenameColumn(oldName, newName string)`](../rename-column) - changes the name of a specified column to a new one
-- [`(*Table).RenameColumnsFunc()`](../rename-columns) - changes columns name by a function
+- [`(*Table).RenameColumnsFunc()`](../rename-columns-func) - changes columns name by a function
 - `(*Table).Col(name string)`
