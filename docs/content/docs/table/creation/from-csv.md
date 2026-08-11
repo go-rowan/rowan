@@ -120,5 +120,5 @@ Columns:
 
 - [`FromExcel(path string, argOpts ...ExcelOption)`](../from-excel) — constructs a `Table` from an Excel file
 - [`FromStructs(rows []T)`](../from-structs) — constructs a `Table` from a slice of structs
-- `Overview()`
-- `Display()`
+- [`Overview()`](../../methods/overview) — prints summary of the table
+- [`Display()`](../../methods/display) — prints the table

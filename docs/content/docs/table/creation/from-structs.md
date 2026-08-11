@@ -122,5 +122,5 @@ Columns:
 
 - `New(data map[string][]any, columnsOrder ...[]string)`
 - [`FromCSV(path string, opts ...CSVOption)`](../from-csv) — constructs a `Table` from a CSV file
-- `Overview()`
-- `Display()`
+- [`Overview()`](../../methods/overview) — prints summary of the table
+- [`Display()`](../../methods/display) — prints the table

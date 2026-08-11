@@ -71,7 +71,7 @@ Use `Overview()` when you need to:
 - Validate inferred column types before applying transformations
 
 ## Related Methods
-- `Display()`
+- [`Display()`](../display) — prints the table
 - `Col()`
 - `Stats()`
 - `Select(cols ...string)`
