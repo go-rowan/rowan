@@ -116,5 +116,5 @@ Columns:
 
 - [`FromCSV(path string, opts ...CSVOption)`](../from-csv) — constructs a `Table` from a CSV file
 - [`FromStructs(rows []T)`](../from-structs) — constructs a `Table` from a slice of structs
-- `Overview()`
-- `Display()`
+- [`Overview()`](../../methods/overview) — prints summary of the table
+- [`Display()`](../../methods/display) — prints the table

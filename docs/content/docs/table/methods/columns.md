@@ -77,7 +77,7 @@ Use `Columns()` when you need to:
 
 ## Related Methods
 
-- `Len()`
+- [`Len()`](../len) — returns the number of rows
 - `Col(name string)`
 - `Select(cols ...string)`
-- `Overview()`
+- [`Overview()`](../overview) — prints summary of the table
