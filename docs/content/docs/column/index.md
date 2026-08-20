@@ -63,4 +63,4 @@ type Column struct {
 - [`Table`](../table/) — the primary multi-column tabular structure in Rowan
 
 ### Related Methods
-- [`Col()`](../table/col/) — extracts a `Column` instance from a `Table`
+- [`Col()`](../table/methods/col) — extracts a `Column` instance from a `Table`
