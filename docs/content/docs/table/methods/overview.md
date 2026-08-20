@@ -72,6 +72,6 @@ Use `Overview()` when you need to:
 
 ## Related Methods
 - [`Display()`](../display) — prints the table
-- `Col()`
+- [`Col()`](../col) — extracts a `Column` instance from a `Table`
 - [`Stats()`](../stats) — prints descriptive statistics of numeric columns
 - `Select(cols ...string)`

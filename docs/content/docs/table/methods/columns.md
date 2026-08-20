@@ -78,6 +78,6 @@ Use `Columns()` when you need to:
 ## Related Methods
 
 - [`Len()`](../len) — returns the number of rows
-- `Col(name string)`
+- [`Col()`](../col) — extracts a `Column` instance from a `Table`
 - `Select(cols ...string)`
 - [`Overview()`](../overview) — prints summary of the table
