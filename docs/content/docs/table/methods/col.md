@@ -77,7 +77,7 @@ count: 15
 
 ### Related Types
 
-- [`Column`](../../column/) — represents a standalone column structure
+- [`Column`](../../../column/) — represents a standalone column structure
 
 ### Related Methods
 
