@@ -105,4 +105,4 @@ Output:
 - [`(*Table).Columns()`](../columns) - gives a slice of the column name
 - [`(*Table).RenameColumns()`](../rename-columns) - changes multiple columns name
 - [`(*Table).RenameColumnsFunc()`](../rename-columns-func) - changes columns name by a function
-- `(*Table).Col(name string)`
+- [`(*Table).Col()`](methods/col) — extracts a `Column` instance from a `Table`

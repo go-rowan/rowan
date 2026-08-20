@@ -22,7 +22,7 @@ func (t *Table) Display()
 
 ## Parameters
 
-This method does not accept any parameters, at least for now.
+None. This method does not accept any parameters, at least for now.
 
 ---
 
@@ -84,6 +84,6 @@ Output:
 ## Related Methods
 
 - [`Overview()`](../overview) — prints summary of the table
-- `Stats()`
+- [`Stats()`](../stats) — prints descriptive statistics of numeric columns
 - [`New()`](../../creation/new) — constructs a `Table` from a map
 - [`FromExcel()`](../../creation/from-excel) — constructs a `Table` from an Excel file
